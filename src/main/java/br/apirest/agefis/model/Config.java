@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+/* ENTIDADE QUE REPRESENTA OS DADOS DA MOEDA USADA PELA API */
 @Entity
 @Table(name="config")
 public class Config implements Serializable {

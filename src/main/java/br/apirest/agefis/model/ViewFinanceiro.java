@@ -11,6 +11,7 @@ import javax.persistence.TemporalType;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+/* ENTIDADE QUE REPRESENTA A VIEW (VwFINANCEIRO) COM DADOS FINANCEIROS DE USO DAS VAGAS */
 @Entity
 @Table(name="ViewFinanceiro")
 public class ViewFinanceiro {

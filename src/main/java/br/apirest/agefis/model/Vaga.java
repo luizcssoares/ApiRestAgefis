@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/* ENTIDADE QUE REPRESENTA OS DADOS DAS VAGAS */
 @Entity
 @Table(name="vaga")
 public class Vaga  implements Serializable{

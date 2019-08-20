@@ -14,6 +14,7 @@ import javax.persistence.TemporalType;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+/* ENTIDADE QUE REPRESENTA DADOS DA SAIDA DE VEICULOS DAS VAGAS */
 @Entity
 @Table(name="desocupacao")
 public class Desocupacao implements Serializable{

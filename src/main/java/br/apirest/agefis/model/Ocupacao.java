@@ -14,6 +14,7 @@ import javax.persistence.TemporalType;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+/* ENTIDADE QUE REPRESENTA DADOS DA ENTRADA(OCUPACAO) DAS VAGAS */
 @Entity
 @Table(name="ocupacao")
 public class Ocupacao implements Serializable {

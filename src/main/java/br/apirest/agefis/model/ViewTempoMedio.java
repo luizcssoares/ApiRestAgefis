@@ -11,6 +11,7 @@ import javax.persistence.TemporalType;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+/* ENTIDADE QUE REPRESENTA A VIEW (VwTEMPOMEDIO) COM DADOS DE TEMPO MEDIO DE USO DAS VAGAS */
 @Entity
 @Table(name="ViewTempoMedio")
 public class ViewTempoMedio {

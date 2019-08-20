@@ -13,6 +13,8 @@ import javax.persistence.TemporalType;
 import org.springframework.data.annotation.Immutable;
 import org.springframework.format.annotation.DateTimeFormat;
 
+/* ENTIDADE QUE REPRESENTA A VIEW DE MOVIMENTO(VwMovimento) COM DADOS DE 
+   ENTRADA/SAIDA DAS VAGAS */
 @Entity
 @Table(name="ViewMovimento")
 public class ViewMovimento  implements Serializable{

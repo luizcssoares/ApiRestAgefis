@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/* ENTIDADE QUE REPRESENTA O MOVIMENTO(ENTRADA/SAIDA) DE VEICULOS DAS VAGAS */
 @Entity
 @Table(name="movimento")
 public class Movimento {
