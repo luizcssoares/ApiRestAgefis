@@ -1,6 +1,5 @@
 package br.apirest.agefis.controller;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.apirest.agefis.model.Config;
-import br.apirest.agefis.model.Vaga;
-import br.apirest.agefis.repository.ConfigRepository;
+import br.apirest.agefis.service.ConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -29,12 +26,12 @@ import io.swagger.annotations.ApiOperation;
 public class ConfigController {
 	
 	@Autowired
-	ConfigRepository configRepository;
+	ConfigService configService;
 	
 	@GetMapping("/config")
 	@ApiOperation(value="Retorna lista de valores da moeda")
 	public ResponseEntity<?> listaConfig(){
-		List<Config> lista = configRepository.findAll();
+		List<Config> lista = configService.findAll();
 		if (lista.isEmpty()) 
 		{
 			String msg = "{\"message\":\"Nao existe lista de valores da moeda cadastrada.\"}";
@@ -48,7 +45,7 @@ public class ConfigController {
 	public ResponseEntity<?> moedaConfig(){
 		
 		// Seleciona o ultimo registro da tabela de Config para pegar o valor da Moeda
-		Config config = configRepository.findFirstByOrderByIdDesc();		
+		Config config = configService.findFirstByOrderByIdDesc();		
 		if (config == null) 
 		 {
 		    String msg = "{\"message\":\"O valor da Hora do aluguel nao foi configurado.\"}";
@@ -63,7 +60,7 @@ public class ConfigController {
 	@PutMapping("/config")
 	@ApiOperation(value="Atualiza o valor cobrado pela Hora do estacionamento")
 	public ResponseEntity<?> atulizaConfig(@RequestBody Config config){
-		Config configSave = configRepository.save(config);
+		Config configSave = configService.save(config);
 		return new ResponseEntity<Config>(configSave, HttpStatus.OK);		
 		//return configRepository.save(config);
 	}
@@ -71,7 +68,7 @@ public class ConfigController {
 	@PostMapping("/config")
 	@ApiOperation(value="Insere o valor cobrado pela Hora do estacionamento")
 	public ResponseEntity<?> insereConfig(@RequestBody Config config){									
-		Config configSave = configRepository.save(config);
+		Config configSave = configService.save(config);
 		return new ResponseEntity<Config>(configSave, HttpStatus.OK);		 	
 	}
 }

@@ -1,6 +1,7 @@
 package br.apirest.agefis.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,5 +18,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Repository
 public interface VagaRepository extends JpaRepository<Vaga, Long>{
-	Vaga findById(long id);	
+	Vaga findByNome(String nome);
+	Vaga save(Vaga vaga);
+	Vaga findById(long id);
 }
