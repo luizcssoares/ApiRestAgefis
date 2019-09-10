@@ -1,14 +1,16 @@
 package br.apirest.agefis.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import br.apirest.agefis.dto.VagaDTO;
 import br.apirest.agefis.model.Vaga;
 import br.apirest.agefis.repository.VagaRepository;
-import br.apirest.agefis.service.exception.ObjectNotFoundException;
 
 @Service
 public class VagaService {
@@ -28,6 +30,11 @@ public class VagaService {
 		return vaga;
 	}
 	
+	public Page<Vaga> findPage(Integer page, Integer linesPerPage, String direction, String orderBy) {
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		return repository.findAll(pageRequest);
+	}
+	
 	public Vaga save(Vaga vaga) {
 		return repository.save(vaga);
 	}
@@ -41,9 +48,7 @@ public class VagaService {
 		return vaga.getStatus(); 
 	}
 	
-	public void atualizaStatusVaga(long id, String status) {
-		Vaga vaga = repository.findById(id);
-		vaga.setStatus(status);		
-		repository.save(vaga);		
+	public Vaga fromDTO(VagaDTO vagaDto) {
+		return new Vaga(vagaDto.getId(), vagaDto.getNome(), vagaDto.getStatus());
 	}
 }

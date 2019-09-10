@@ -1,45 +1,36 @@
 package br.apirest.agefis.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.springframework.format.annotation.DateTimeFormat;
 
-/* ENTIDADE QUE REPRESENTA OS DADOS DAS VAGAS */
+/* ENTIDADE QUE REPRESENTA OS DADOS DA MOEDA USADA PELA API */
 @Entity
-@Table(name="vaga")
-public class Vaga  implements Serializable{
+@Table(name="usuario")
+public class Usuario implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)	
 	private long id;	
-	private String nome;	
-	private String status; // D - Desocupada / O - Ocupada
-	
-	//@JsonManagedReference
-	@OneToMany(mappedBy="vaga")
-	private List<Movimento> movimentos = new ArrayList<>();
-	
-	
-	public Vaga() {
-		
-	}
-	
-	public Vaga(long id, String nome, String status) {
-		this.id = id;
-		this.nome = nome;
-		this.status = status;
-	}
+	private String email;
+	private String senha;
+	private String nome;
 	
 	public long getId() {
 		return id;
@@ -49,6 +40,22 @@ public class Vaga  implements Serializable{
 		this.id = id;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+	
 	public String getNome() {
 		return nome;
 	}
@@ -56,23 +63,7 @@ public class Vaga  implements Serializable{
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	
-	public List<Movimento> getMovimentos() {
-		return movimentos;
-	}
-
-	public void setMovimentos(List<Movimento> movimentos) {
-		this.movimentos = movimentos;
-	}
-		
+    
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -89,10 +80,10 @@ public class Vaga  implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Vaga other = (Vaga) obj;
+		Usuario other = (Usuario) obj;
 		if (id != other.id)
 			return false;
 		return true;
-	}	
-
+	}
+	
 }

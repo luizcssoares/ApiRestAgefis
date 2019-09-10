@@ -48,8 +48,8 @@ public class MovimentoController {
 	MovimentoService movimentoService;
 			
 	@GetMapping("/movimento")
-	@ApiOperation(value="Retorna uma lista de Ocupacao das vagas")
-	public ResponseEntity<?> listaOcupacao(){
+	@ApiOperation(value="Retorna uma lista de Movimento das vagas")
+	public ResponseEntity<?> listaMovimento(){
 		List<Movimento> lista = movimentoService.findAll();
 		if (lista.isEmpty()) {
 			String msg = "{\"message\":\"A lista de Ocupacao das vagas esta vazia.\"}";
@@ -60,7 +60,7 @@ public class MovimentoController {
 	
 	@GetMapping("/movimento/{id}")
 	@ApiOperation(value="Retorna uma unica Ocupacao de vaga")
-	public ResponseEntity<?> detalheOcupacao(@PathVariable(value="id") long id){
+	public ResponseEntity<?> detalheMovimento(@PathVariable(value="id") long id){
 		Movimento movimento = movimentoService.findById(id);		
 		if (movimento == null) 
 		 {
@@ -72,61 +72,10 @@ public class MovimentoController {
 			return new ResponseEntity<Movimento>(movimento, HttpStatus.OK);        
 	      }				
 	}
-	
-	@PostMapping("/movimento/ocupacao")
-	@ApiOperation(value="Salva dados de uma Ocupacao de vaga")		
-	//public ResponseEntity<?> salvarOcupacao(@RequestBody Ocupacao ocupacao) throws ParseException{
-	public ResponseEntity<?> salvarOcupacao(@RequestParam String numplaca, 
-			                                @RequestParam long idvaga) throws ParseException{		
 		
-		System.out.println("entrei no salvarOcupacao");
-		
-		Vaga vaga = vagaService.findById(idvaga);
-		if (vaga == null)                      // Checa se vaga existe
-		{
-			String msg = "{\"message\":\"A vaga " + idvaga + " nao existe.\"}";	
-            return new ResponseEntity<String>(msg, HttpStatus.NOT_FOUND);
-		 }
-		else
-		{
-			// Checa se vaga Desocupada (D - Desocupada)
-			if (vagaService.statusVaga(vaga.getId()).equals("D"))  
-			{								
-				Util util = new Util();		
-				Date dataEntrada = util.DataCorrente();
-				Date horaEntrada = util.HoraCorrente();
-				
-				// Lanca registro na tabela Movimento
-				Movimento movimento = new Movimento();
-				movimento.setVaga(vaga); 											
-				movimento.setNumplaca(numplaca);
-				movimento.setEntrada(dataEntrada);
-				movimento.setHoraentrada(horaEntrada);
-				movimento.setTipo(TipoOcupacao.HORISTA);											
-				Movimento movimentoSave = movimentoService.save(movimento);
-																			
-				// Atualiza vaga para status (O - Ocupada) e Lista de Ocupação.
-				List<Movimento> listaMov = new ArrayList<>();
-				listaMov.add(movimentoSave);
-				
-				Vaga vagaFind = vagaService.findById(idvaga);
-				vagaFind.setMovimentos(listaMov);				
-				vagaFind.setStatus("O");		
-				
-				Vaga vagaUpdate = vagaService.save(vagaFind);		
-														
-				return new ResponseEntity<Movimento>(movimentoSave, HttpStatus.OK);											 		
-			}
-			else {
-				String msg = "{\"message\":\"A vaga " + idvaga + " encontra-se Ocupada.\"}";
-	            return new ResponseEntity<String>(msg, HttpStatus.NOT_FOUND);
-			}
-		}
-	}
-	
 	@DeleteMapping("/movimento")
-	@ApiOperation(value="Excluir uma Ocupacao de vaga")
-	public ResponseEntity<?> removeOcupacao(@RequestBody Movimento movimento){		
+	@ApiOperation(value="Excluir um Movimento de vaga")
+	public ResponseEntity<?> removeMovimento(@RequestBody Movimento movimento){		
 		Movimento ocupacaoFind = movimentoService.findById(movimento.getId());		
 		if (ocupacaoFind == null) 
 		{
@@ -139,7 +88,7 @@ public class MovimentoController {
 	
 	@PutMapping("/movimento")
 	@ApiOperation(value="Atualiza dados de uma Ocupacao de vaga")
-	public ResponseEntity<?> atualizaOcupacao(@RequestBody Movimento movimento){
+	public ResponseEntity<?> atualizaMovimento(@RequestBody Movimento movimento){
 		
 		Movimento ocupacaoEdit = movimentoService.findById(movimento.getId());		
 		if (ocupacaoEdit == null) 
@@ -150,65 +99,5 @@ public class MovimentoController {
 		
 		Movimento ocupacaoSave = movimentoService.save(movimento);		
 		return new ResponseEntity<Movimento>(ocupacaoSave, HttpStatus.OK);						
-	}
-		
-	@PostMapping("/movimento/desocupacao")
-	@ApiOperation(value="Salva dados de uma Vaga Desocupada")	
-	public ResponseEntity<?> salvarDesocupacao(@RequestParam String numplaca) throws ParseException{
-		
-		// Valor cobrado pela Hora do estacionamento 		 
-		Config config = configService.findFirstByOrderByIdDesc();
-		if (config == null)
-		{
-			String msg = "{\"message\":\"O valor da Hora do Aluguel ainda nao foi configurado.\"}";
-            return new ResponseEntity<String>(msg, HttpStatus.NOT_FOUND);
-		 }
-		else 
-		{	
-			// Valor da Hora do Aluguel
-		    BigDecimal valorHora = config.getValor();
-		    
-		    // Localiza Ocupacao pela numplaca
-		    Movimento desocupacao = movimentoService.findByNumplaca(numplaca);		    
-		    long idvaga = desocupacao.getVaga().getId();
-		    long idmovimento = desocupacao.getId();
-						
-  		    // Checa primeiro para ver se vaga esta Ocupada
-		    Vaga vaga = vagaService.findById(idvaga);		
-			if (vaga.getStatus().equals("O"))  
-			{																										
-				// Procura na tabela Ocupacao a Data/hora de entrada				
-				Date dataEntrada = desocupacao.getEntrada();
-				Date horaEntrada = desocupacao.getHoraentrada();
-											
-				// Data e Hora da Saida
-				Util util = new Util();
-				Date dataSaida = util.DataCorrente();		
-				Date horaSaida = util.HoraCorrente();			
-						
-				// Calculo do Numero de horas para efetuar o Pagamento						
-				double numHoras = (horaSaida.getTime() - horaEntrada.getTime()) / 3600000;				
-				BigDecimal valorPago = valorHora.multiply(new BigDecimal(numHoras));		
-				//System.out.println(valorPago);
-										
-				// Preenche os campo ValorPago, DataSaida, Horasaida e Valor Moeda (config.getId()) da Desocupacao				
-				desocupacao.setConfig(config);
-				desocupacao.setHorasaida(horaSaida); 
-				desocupacao.setSaida(dataSaida);		
-				desocupacao.setValorpago(valorPago);
-				Movimento desocupacaoSave = movimentoService.save(desocupacao);		
-											
-				// Atualiza Vaga para status (D - desocupada)
-				vaga.setStatus("D");
-				Vaga vagaUpdate = vagaService.save(vaga);
-								
-				return new ResponseEntity<Movimento>(desocupacaoSave, HttpStatus.OK);	
-			 }
-			else 
-			{
-				String msg = "{\"message\":\"A vaga " + vaga.getId() + " ja encontra-se Desocupada.\"}";
-	            return new ResponseEntity<String>(msg, HttpStatus.NOT_FOUND);
-			 }
-		}
 	}		
 }

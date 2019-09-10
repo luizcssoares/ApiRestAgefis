@@ -16,7 +16,7 @@ import javax.persistence.TemporalType;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.apirest.agefis.enums.TipoOcupacao;
 
@@ -30,7 +30,8 @@ public class Movimento implements Serializable{
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	
-	@JsonBackReference
+	//@JsonBackReference
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="idvaga")
 	private Vaga vaga;
@@ -45,7 +46,8 @@ public class Movimento implements Serializable{
 	@DateTimeFormat(pattern = "HH:mm")
     private Date horaentrada;
 	
-	private TipoOcupacao tipo;
+	//private TipoOcupacao tipo;
+	private Integer tipo;
 		
 	@ManyToOne
 	@JoinColumn(name="idconfig")
@@ -132,13 +134,13 @@ public class Movimento implements Serializable{
 	public void setHoraentrada(Date horaentrada) {
 		this.horaentrada = horaentrada;
 	}
-
+	
 	public TipoOcupacao getTipo() {
-		return tipo;
+		return TipoOcupacao.toEnum(tipo);
 	}
 
 	public void setTipo(TipoOcupacao tipo) {
-		this.tipo = tipo;
+		this.tipo = tipo.getId();
 	}
 
 	@Override

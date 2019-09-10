@@ -14,6 +14,10 @@ public class MovimentoService {
 	@Autowired
 	MovimentoRepository repository;
 	
+	public List<Movimento> findAllOcupacao() {				
+		return repository.findAllOcupacao();
+	}
+	
 	public Movimento findById(long id) {				
 		return repository.findById(id);
 	}
